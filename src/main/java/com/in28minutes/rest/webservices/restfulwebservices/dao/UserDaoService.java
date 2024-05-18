@@ -27,7 +27,7 @@ public class UserDaoService {
 	public User findUser(int id) {
 		
 		  Predicate<? super User> predicate= user -> user.getId().equals(id); 
-		  return users.stream().filter(predicate).findFirst().get();
+		  return users.stream().filter(predicate).findFirst().orElse(null);
 		 
 		//return users.get(id);
 	}
@@ -36,5 +36,25 @@ public class UserDaoService {
 		user.setId(++userCount);
 		users.add(user);
 		return user;
+	}
+
+	public User deleteById(int id) {
+		 // First, find the user with the given ID
+	    User deleteUser = users.stream()
+	                           .filter(user -> user.getId() == id)
+	                           .findFirst()
+	                           .orElse(null);
+
+	    // If user with the given ID is found, proceed to remove
+	    if (deleteUser != null) {
+	        Predicate<? super User> predicate = user -> user.getId() == id;
+	        boolean removed = users.removeIf(predicate);
+	        if (removed) {
+	            return deleteUser;
+	        }
+	    }
+
+	    // Return null if the user with the given ID was not found or not removed
+	    return null;
 	}
 }
