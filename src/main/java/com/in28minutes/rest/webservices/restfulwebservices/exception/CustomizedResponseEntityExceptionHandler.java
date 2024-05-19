@@ -37,8 +37,11 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
 			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		//get all field errors
 		List<FieldError> fieldErrors = ex.getFieldErrors();
+		//get all field errors message
 		List<String> errorListMessage = fieldErrors.stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList());
+		// join all the error messages to a string and return that 
 		String errorMessages = errorListMessage.stream().collect(Collectors.joining(","));
 		
 		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Total errors: "+ex.getErrorCount()+" and the erros are: "+ errorMessages, request.getDescription(false));
